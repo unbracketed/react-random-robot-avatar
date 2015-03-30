@@ -1,0 +1,28 @@
+{
+  "name": "react-random-bot-avatar",
+  "version": "0.1.0",
+  "description": "React components for generating random SVG robot head avatars",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unbracketed/react-random-bot-avatar"
+  },
+  "keywords": [
+    "react",
+    "svg",
+    "avatar",
+    "robot"
+  ],
+  "author": "Brian Luft <brian@lincolnloop.com> (https://github.com/unbracketed)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/unbracketed/react-random-bot-avatar/issues"
+  },
+  "homepage": "https://github.com/unbracketed/react-random-bot-avatar",
+  "dependencies": {
+    "react": "^0.13.1"
+  }
+}
