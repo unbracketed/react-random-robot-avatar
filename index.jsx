@@ -32,7 +32,27 @@ var RandomBotAvatar = React.createClass({
       y: headY
     }
 
-    var eyes = <Eyes/>
+    var eyesLeftX = headX + (headWidth * 0.25)
+    var eyesRightX = headX + (headWidth * 0.75)
+
+    var eyesLeftY = headY + (headHeight * 0.25)
+    var eyesRightY = headY + (headHeight * 0.25)
+
+    var eyesRadiusLeft = (headWidth / 2) * 0.25
+    var eyesRadiusRight = (headWidth / 2) * 0.25
+
+    var eyesDims = {
+      leftX: eyesLeftX,
+      leftY: eyesLeftY,
+      leftRadius: eyesRadiusLeft,
+      rightX: eyesRightX,
+      rightY: eyesRightY,
+      rightRadius: eyesRadiusRight
+    }
+    var eyes = <Eyes fill="#0000FF" {...eyesDims}/>
+
+
+
     var top = <Top/>
     var ears = <Ears/>
     var collar = <Collar/>
