@@ -1,74 +1,55 @@
 var React = require('react')
-
-var Rectangle = React.createClass({
-    render: function() {
-        return <rect {...this.props}>{this.props.children}</rect>;
-    }
-});
-
-
-
-var Eyes = React.createClass({
-
-  render: function() {
-    return (
-      <g>
-        {/* left */}
-        <path d="M145.327,223.421c-17.482,0-31.663,14.181-31.663,31.663c0,17.488,14.181,31.654,31.663,31.654    c17.483,0,31.668-14.166,31.668-31.654C176.995,237.602,162.811,223.421,145.327,223.421z"/>
-        {/* right */}
-        <path d="M353.834,223.887c-17.487,0-31.653,14.18-31.653,31.668c0,17.482,14.166,31.662,31.653,31.662    c17.483,0,31.663-14.18,31.663-31.662C385.497,238.067,371.317,223.887,353.834,223.887z"/>
-      </g>
-    )
-  }
-
-})
-
-var Head = React.createClass({
-  render: function() {
-    return (
-      <path d="M427.749,170.81H71.57c-5.475,0-9.919,4.434-9.919,9.903v294.211h376.021V180.713    C437.673,175.244,433.224,170.81,427.749,170.81z M143.41,442.695h-32.584c-5.475,0-9.918-4.443-9.918-9.918v-61.989    c0-5.469,4.443-9.903,9.918-9.903h32.584V442.695z M100.654,255.555c0-24.756,20.066-44.837,44.836-44.837    c24.75,0,44.822,20.081,44.822,44.837c0,24.764-20.072,44.831-44.822,44.831C120.721,300.386,100.654,280.319,100.654,255.555z     M207.167,442.695h-42.501v-81.811h42.501V442.695z M270.911,442.695h-42.502v-81.811h42.502V442.695z M334.659,442.695h-42.507    v-81.811h42.507V442.695z M398.416,432.777c0,5.475-4.448,9.918-9.923,9.918h-32.584v-81.811h32.584    c5.475,0,9.923,4.435,9.923,9.903V432.777z M353.834,300.386c-24.755,0-44.822-20.067-44.822-44.831    c0-24.756,20.067-44.837,44.822-44.837c24.765,0,44.831,20.081,44.831,44.837C398.665,280.319,378.599,300.386,353.834,300.386z"/>
-    )
-  }
-})
-
-var Top = React.createClass({
-  render: function() {
-    return (
-      <path d="M287.276,41.737c0-20.776-16.845-37.617-37.617-37.617c-20.771,0-37.616,16.841-37.616,37.617   c0,15.354,9.214,28.547,22.411,34.396l-8.922,88.896h15.244h18.605h15.244l-8.96-89.299   C278.423,69.713,287.276,56.784,287.276,41.737z"/>
-    )
-  }
-})
-
-
-var Ears = React.createClass({
-  render: function() {
-    return (
-      <g>
-        {/*left*/}
-        <path d="M55.899,236.792c-19.031,0-34.462,11.012-34.462,24.592v79.98c0,13.581,15.431,24.606,34.462,24.606"/>
-        {/*right*/}
-        <path d="M443.425,236.792c19.027,0,34.459,11.012,34.459,24.592v79.98c0,13.581-15.432,24.606-34.459,24.606"/>
-      </g>
-    )
-  }
-})
-
-var Collar = React.createClass({
-  render: function() {
-    return (
-      <path d="M4.217,535.335v-42.143c0-5.475,4.435-9.923,9.923-9.923h471.044c5.483,0,9.918,4.448,9.918,9.923v42.143"/>
-    )
-  }
-})
+var Head = require('./parts/Head')
+var Eyes = require('./parts/Eyes')
+var Top = require('./parts/Top')
+var Ears = require('./parts/Ears')
+var Collar = require('./parts/Collar')
 
 
 var RandomBotAvatar = React.createClass({
 
-    render: function() {
-        return <svg viewBox="0 0 499.319 539.456" {...this.props}>{this.props.children}</svg>;
+  layoutParts: function() {
+    var viewBox = {
+      minX: 0,
+      minY: 0,
+      width: 1000,
+      height: 1000
     }
+
+    var head = <Head/>
+    var eyes = <Eyes/>
+    var top = <Top/>
+    var ears = <Ears/>
+    var collar = <Collar/>
+
+    return {
+      viewBox: viewBox,
+      viewBoxParam: [String(viewBox.minX), String(viewBox.minY), String(viewBox.width), String(viewBox.height)].join(' '),
+      head: head,
+      eyes: eyes,
+      top: top,
+      ears: ears,
+      collar: collar
+    }
+  },
+
+  render: function() {
+    var layout = this.layoutParts()
+    return (
+      <svg
+        viewBox={layout.viewBoxParam}
+        {...this.props}>
+        {layout.head}
+        {layout.eyes}
+        {layout.top}
+        {layout.ears}
+        {layout.collar}
+        {this.props.children}
+      </svg>
+    )
+  }
 
 
 })
 
-module.exports = {RandomBotAvatar, Rectangle, Eyes, Head, Ears, Top, Collar}
+module.exports = RandomBotAvatar
