@@ -4,16 +4,24 @@ var Eyes = require('./parts/Eyes')
 var Top = require('./parts/Top')
 var Ears = require('./parts/Ears')
 var Collar = require('./parts/Collar')
+var getRandomVars = require('./utils')
+var d3 = require('d3')
 
 
+/*
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
+*/
+
+
+
 
 
 var RandomBotAvatar = React.createClass({
 
   layoutParts: function() {
+
     var viewBox = {
       minX: 0,
       minY: 0,
@@ -21,9 +29,26 @@ var RandomBotAvatar = React.createClass({
       height: 1000
     }
 
-    var headWidth = getRandomInt(viewBox.width * 0.4, viewBox.width * 0.8)
+
+    var seed = 'domo arigato'
+    var input = seed + '#unbracketed'
+    var R = getRandomVars(input)
+
+
+    /*
+      calc head
+    */
+    var rWidth = R[5],
+        rHeight = R[13]
+
+    var scale = d3.scale.linear().domain([0, 99])
+
+    scale.range([viewBox.width * 0.4, viewBox.width * 0.8])
+    var headWidth = scale(rWidth)
     var headX = (viewBox.width - headWidth) / 2
-    var headHeight = getRandomInt(viewBox.height * 0.4, viewBox.width * 0.8)
+
+    scale.range([viewBox.height * 0.4, viewBox.height * 0.8])
+    var headHeight = scale(rHeight)
     var headY = (viewBox.height - headHeight) / 2
     var headDims = {
       width: headWidth,
@@ -32,6 +57,7 @@ var RandomBotAvatar = React.createClass({
       y: headY
     }
 
+    /* calc eyes */
     var eyesLeftX = headX + (headWidth * 0.25)
     var eyesRightX = headX + (headWidth * 0.75)
 
