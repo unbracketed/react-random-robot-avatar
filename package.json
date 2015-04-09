@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/unbracketed/react-random-bot-avatar",
   "dependencies": {
+    "d3": "^3.5.5",
     "react": "^0.13.1"
   }
 }
