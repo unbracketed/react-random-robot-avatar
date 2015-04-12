@@ -8,7 +8,10 @@ var Eyes2 = require('./parts/eyes/Eyes2')
 
 var Top = require('./parts/Top')
 var Ears = require('./parts/Ears')
+
 var Mouth = require('./parts/mouths/Mouth')
+var Mouth2 = require('./parts/mouths/Mouth2')
+
 var Collar = require('./parts/Collar')
 var getRandomVars = require('./utils')
 var d3 = require('d3')
@@ -16,7 +19,7 @@ var d3 = require('d3')
 
 var RandomBotAvatar = React.createClass({
 
-  debug: false,
+  debug: true,
 
   calcHead: function(R, scale, viewBox) {
 
@@ -57,8 +60,8 @@ var RandomBotAvatar = React.createClass({
     var eyeContainer = headDims.eyeZone
 
     //size - eyezone with margin
-    var narrowest = Math.min(eyeContainer.width/2, eyeContainer.height)
-    scale.range([(narrowest * 0.05), (narrowest * 0.95)])
+    var narrowest = Math.min(eyeContainer.width, eyeContainer.height)
+    scale.range([(narrowest * 0.05)/2, (narrowest * 0.95)/2])
     var eyesRadiusLeft = scale(rRadius)
     var eyesRadiusRight = scale(rRadius)
 
@@ -145,17 +148,25 @@ var RandomBotAvatar = React.createClass({
 
 
     var seed = 'domo arigato'
-    var input = String(rnd) + seed
+    var input = seed + String(rnd) + seed
     var R = getRandomVars(input)
+    console.log(R)
     var scale = d3.scale.linear().domain([0, 99])
 
     var heads = [Head, Head2]
-    var eyes = [Eyes, Eyes2]
     scale.rangeRound([0, heads.length-1])
+    console.log('head R', R[15])
     var headComponent = heads[scale(R[15])]
-    var eyeComponent = eyes[scale(R[2])]
-    var mouthComponent = Mouth
 
+    var eyes = [Eyes, Eyes2]
+    scale.rangeRound([0, eyes.length-1])
+    console.log('eyes R', R[2])
+    var eyeComponent = eyes[scale(R[2])]
+
+    var mouths = [Mouth, Mouth2]
+    scale.rangeRound([0, mouths.length-1])
+    console.log('mouth R', R[6])
+    var mouthComponent = mouths[scale(R[6])]
 
     var headDims = this.calcHead(R, scale, viewBox)
     var eyesDims = this.calcEyes(R, scale, headDims)
@@ -201,6 +212,7 @@ var RandomBotAvatar = React.createClass({
         <rect x="0" y="0" width="1000" height="1000" fill="#000000"/>
 
         <layout.headComponent {...layout.headDims}/>
+        {/*debugEyeZone*/}
 
         <layout.eyeComponent fill="#0000FF" {...layout.eyesDims}/>
         <layout.mouthComponent {...layout.mouthDims}/>

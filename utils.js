@@ -46,24 +46,24 @@ function getRandomVars(seed) {
 
   rndIdx = [
     [rndSrc[0], rndSrc[1]],
-    [rndSrc[0], rndSrc[2]],
-    [rndSrc[0], rndSrc[3]],
-    [rndSrc[0], rndSrc[4]],
-    [rndSrc[0], rndSrc[5]],
-    [rndSrc[0], rndSrc[6]],
-    [rndSrc[0], rndSrc[7]],
-    [rndSrc[0], rndSrc[8]],
-    [rndSrc[0], rndSrc[9]],
-    [rndSrc[1], rndSrc[0]],
-    /**/
     [rndSrc[1], rndSrc[2]],
-    [rndSrc[1], rndSrc[3]],
-    [rndSrc[1], rndSrc[4]],
-    [rndSrc[1], rndSrc[5]],
-    [rndSrc[1], rndSrc[6]],
-    [rndSrc[1], rndSrc[7]],
-    [rndSrc[1], rndSrc[8]],
-    [rndSrc[1], rndSrc[9]]
+    [rndSrc[2], rndSrc[3]],
+    [rndSrc[3], rndSrc[4]],
+    [rndSrc[4], rndSrc[5]],
+    [rndSrc[5], rndSrc[6]],
+    [rndSrc[6], rndSrc[7]],
+    [rndSrc[7], rndSrc[8]],
+    [rndSrc[8], rndSrc[9]],
+    [rndSrc[9], rndSrc[0]],
+    /**/
+    [rndSrc[9], rndSrc[2]],
+    [rndSrc[8], rndSrc[3]],
+    [rndSrc[7], rndSrc[4]],
+    [rndSrc[6], rndSrc[5]],
+    [rndSrc[5], rndSrc[6]],
+    [rndSrc[4], rndSrc[7]],
+    [rndSrc[3], rndSrc[8]],
+    [rndSrc[2], rndSrc[9]]
   ]
 
   var rndVals = rndIdx.map(function(r) {
