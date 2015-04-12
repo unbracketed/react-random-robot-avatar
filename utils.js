@@ -42,7 +42,7 @@ function combinations(arr, k){
 
 function getRandomVars(seed) {
   var rndSrc = String(str2hash(seed))
-  console.log(rndSrc)
+  // console.log(rndSrc)
 
   rndIdx = [
     [rndSrc[0], rndSrc[1]],
@@ -69,7 +69,7 @@ function getRandomVars(seed) {
   var rndVals = rndIdx.map(function(r) {
     return parseInt(r[0] + r[1], 10)
   })
-  console.log(rndVals)
+  // console.log(rndVals)
   return rndVals
 }
 
