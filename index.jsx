@@ -8,6 +8,7 @@ var Eyes2 = require('./parts/eyes/Eyes2')
 
 var Top = require('./parts/Top')
 var Ears = require('./parts/Ears')
+var Mouth = require('./parts/mouths/Mouth')
 var Collar = require('./parts/Collar')
 var getRandomVars = require('./utils')
 var d3 = require('d3')
@@ -103,6 +104,17 @@ var RandomBotAvatar = React.createClass({
     }
   },
 
+  calcMouth: function(R, scale, headDims) {
+    var width = headDims.width * 0.7
+    var margin = headDims.width - width
+    return {
+      x: headDims.x + margin/2,
+      y: headDims.y + (headDims.height * 0.7),
+      width: headDims.width * 0.7,
+      height: headDims.height * 0.2
+    }
+  },
+
   calcCollar: function(R, scale, headDims) {
 
     var rHeight = R[17],
@@ -142,11 +154,13 @@ var RandomBotAvatar = React.createClass({
     scale.rangeRound([0, heads.length-1])
     var headComponent = heads[scale(R[15])]
     var eyeComponent = eyes[scale(R[2])]
+    var mouthComponent = Mouth
 
 
     var headDims = this.calcHead(R, scale, viewBox)
     var eyesDims = this.calcEyes(R, scale, headDims)
     var topDims = this.calcTop(R, scale, headDims)
+    var mouthDims = this.calcMouth(R, scale, headDims)
     var earsDims = this.calcEars(R, scale, headDims)
     var collarDims = this.calcCollar(R, scale, headDims)
 
@@ -165,9 +179,11 @@ var RandomBotAvatar = React.createClass({
       eyesDims: eyesDims,
       topDims: topDims,
       earsDims: earsDims,
+      mouthDims: mouthDims,
       collarDims: collarDims,
       headComponent: headComponent,
-      eyeComponent: eyeComponent
+      eyeComponent: eyeComponent,
+      mouthComponent: mouthComponent
     }
   },
 
@@ -178,14 +194,16 @@ var RandomBotAvatar = React.createClass({
     return (
       <svg
         viewBox={layout.viewBoxParam}
-        {...this.props}>
+        {...this.props}
+        fill="#CCCCCC">
 
         {/* placeholder background */}
-        <rect x="0" y="0" width="1000" height="1000" fill="#CCCCCC"/>
+        <rect x="0" y="0" width="1000" height="1000" fill="#000000"/>
 
         <layout.headComponent {...layout.headDims}/>
 
         <layout.eyeComponent fill="#0000FF" {...layout.eyesDims}/>
+        <layout.mouthComponent {...layout.mouthDims}/>
         <Top {...layout.topDims}/>
         <Ears {...layout.earsDims}/>
         <Collar {...layout.collarDims}/>
