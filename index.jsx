@@ -7,7 +7,8 @@ var Eyes = require('./parts/eyes/Eyes')
 var Eyes2 = require('./parts/eyes/Eyes2')
 
 var Top = require('./parts/Top')
-var Ears = require('./parts/Ears')
+
+var Ears = require('./parts/ears/Ears')
 
 var Mouth = require('./parts/mouths/Mouth')
 var Mouth2 = require('./parts/mouths/Mouth2')
@@ -98,12 +99,19 @@ var RandomBotAvatar = React.createClass({
   },
 
   calcEars: function(R, scale, headDims) {
-    var width = 30
+    var availWidth = (1000 - headDims.width) / 2
+    scale.range([availWidth * 0.2, availWidth * 0.95])
+    var width = scale(R[7])
+    console.log('ears', R[7], width, availWidth)
     return {
+        width: width,
+        height: headDims.height * 0.5,
         leftX: headDims.x - width,
         leftY: headDims.y + (headDims.height * 0.4),
         rightX: headDims.x + headDims.width,
         rightY: headDims.y + (headDims.height * 0.4),
+        R: R,
+        scale: scale
     }
   },
 
