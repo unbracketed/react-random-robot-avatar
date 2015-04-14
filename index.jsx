@@ -61,13 +61,13 @@ var RandomBotAvatar = React.createClass({
 
     //size - eyezone with margin
     var narrowest = Math.min(eyeContainer.width, eyeContainer.height)
-    scale.range([(narrowest * 0.05)/2, (narrowest * 0.95)/2])
+    scale.range([(narrowest * 0.15)/2, (narrowest * 0.95)/2])
     var eyesRadiusLeft = scale(rRadius)
     var eyesRadiusRight = scale(rRadius)
 
     //position - randomize within available space considering eye size
     var oneContainerWidth = ((eyeContainer.width) / 2)
-    var availWidth = oneContainerWidth - (eyesRadiusLeft * 2)
+    var availWidth = oneContainerWidth - (eyesRadiusLeft * 2) - (oneContainerWidth * 0.02)
 
     scale.range([(0 - availWidth/2), availWidth/2])
 
