@@ -106,7 +106,7 @@ var RandomBotAvatar = React.createClass({
     return {
         width: width,
         height: headDims.height * 0.5,
-        leftX: headDims.x - width,
+        leftX: headDims.x,
         leftY: headDims.y + (headDims.height * 0.4),
         rightX: headDims.x + headDims.width,
         rightY: headDims.y + (headDims.height * 0.4),
@@ -158,22 +158,18 @@ var RandomBotAvatar = React.createClass({
     var seed = 'domo arigato'
     var input = seed + String(rnd) + seed
     var R = getRandomVars(input)
-    console.log(R)
     var scale = d3.scale.linear().domain([0, 99])
 
     var heads = [Head, Head2]
     scale.rangeRound([0, heads.length-1])
-    console.log('head R', R[15])
     var headComponent = heads[scale(R[15])]
 
     var eyes = [Eyes, Eyes2]
     scale.rangeRound([0, eyes.length-1])
-    console.log('eyes R', R[2])
     var eyeComponent = eyes[scale(R[2])]
 
     var mouths = [Mouth, Mouth2]
     scale.rangeRound([0, mouths.length-1])
-    console.log('mouth R', R[6])
     var mouthComponent = mouths[scale(R[6])]
 
     var headDims = this.calcHead(R, scale, viewBox)
@@ -182,13 +178,6 @@ var RandomBotAvatar = React.createClass({
     var mouthDims = this.calcMouth(R, scale, headDims)
     var earsDims = this.calcEars(R, scale, headDims)
     var collarDims = this.calcCollar(R, scale, headDims)
-
-
-    console.log('HEAD', headDims)
-    console.log('EYES', eyesDims)
-    // console.log('TOP', topDims)
-    // console.log('EARS', earsDims)
-    // console.log('COLLAR', collarDims)
 
 
     return {
@@ -208,8 +197,8 @@ var RandomBotAvatar = React.createClass({
 
   render: function() {
     var layout = this.layoutParts(this.props.seed)
-    var debugEyeZone = (this.debug ? <rect {...layout.headDims.eyeZone} fill="#008888"/> : '')
-    console.log(debugEyeZone)
+    // var debugEyeZone = (this.debug ? <rect {...layout.headDims.eyeZone} fill="#008888"/> : '')
+    // console.log(debugEyeZone)
     return (
       <svg
         viewBox={layout.viewBoxParam}
