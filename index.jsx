@@ -1,74 +1,227 @@
 var React = require('react')
 
-var Rectangle = React.createClass({
-    render: function() {
-        return <rect {...this.props}>{this.props.children}</rect>;
-    }
-});
+var Head = require('./parts/heads/Head')
+var Head2 = require('./parts/heads/Head2')
 
+var Eyes = require('./parts/eyes/Eyes')
+var Eyes2 = require('./parts/eyes/Eyes2')
 
+var Top = require('./parts/Top')
 
-var Eyes = React.createClass({
+var Ears = require('./parts/ears/Ears')
 
-  render: function() {
-    return (
-      <g>
-        {/* left */}
-        <path d="M145.327,223.421c-17.482,0-31.663,14.181-31.663,31.663c0,17.488,14.181,31.654,31.663,31.654    c17.483,0,31.668-14.166,31.668-31.654C176.995,237.602,162.811,223.421,145.327,223.421z"/>
-        {/* right */}
-        <path d="M353.834,223.887c-17.487,0-31.653,14.18-31.653,31.668c0,17.482,14.166,31.662,31.653,31.662    c17.483,0,31.663-14.18,31.663-31.662C385.497,238.067,371.317,223.887,353.834,223.887z"/>
-      </g>
-    )
-  }
+var Mouth = require('./parts/mouths/Mouth')
+var Mouth2 = require('./parts/mouths/Mouth2')
 
-})
-
-var Head = React.createClass({
-  render: function() {
-    return (
-      <path d="M427.749,170.81H71.57c-5.475,0-9.919,4.434-9.919,9.903v294.211h376.021V180.713    C437.673,175.244,433.224,170.81,427.749,170.81z M143.41,442.695h-32.584c-5.475,0-9.918-4.443-9.918-9.918v-61.989    c0-5.469,4.443-9.903,9.918-9.903h32.584V442.695z M100.654,255.555c0-24.756,20.066-44.837,44.836-44.837    c24.75,0,44.822,20.081,44.822,44.837c0,24.764-20.072,44.831-44.822,44.831C120.721,300.386,100.654,280.319,100.654,255.555z     M207.167,442.695h-42.501v-81.811h42.501V442.695z M270.911,442.695h-42.502v-81.811h42.502V442.695z M334.659,442.695h-42.507    v-81.811h42.507V442.695z M398.416,432.777c0,5.475-4.448,9.918-9.923,9.918h-32.584v-81.811h32.584    c5.475,0,9.923,4.435,9.923,9.903V432.777z M353.834,300.386c-24.755,0-44.822-20.067-44.822-44.831    c0-24.756,20.067-44.837,44.822-44.837c24.765,0,44.831,20.081,44.831,44.837C398.665,280.319,378.599,300.386,353.834,300.386z"/>
-    )
-  }
-})
-
-var Top = React.createClass({
-  render: function() {
-    return (
-      <path d="M287.276,41.737c0-20.776-16.845-37.617-37.617-37.617c-20.771,0-37.616,16.841-37.616,37.617   c0,15.354,9.214,28.547,22.411,34.396l-8.922,88.896h15.244h18.605h15.244l-8.96-89.299   C278.423,69.713,287.276,56.784,287.276,41.737z"/>
-    )
-  }
-})
-
-
-var Ears = React.createClass({
-  render: function() {
-    return (
-      <g>
-        {/*left*/}
-        <path d="M55.899,236.792c-19.031,0-34.462,11.012-34.462,24.592v79.98c0,13.581,15.431,24.606,34.462,24.606"/>
-        {/*right*/}
-        <path d="M443.425,236.792c19.027,0,34.459,11.012,34.459,24.592v79.98c0,13.581-15.432,24.606-34.459,24.606"/>
-      </g>
-    )
-  }
-})
-
-var Collar = React.createClass({
-  render: function() {
-    return (
-      <path d="M4.217,535.335v-42.143c0-5.475,4.435-9.923,9.923-9.923h471.044c5.483,0,9.918,4.448,9.918,9.923v42.143"/>
-    )
-  }
-})
+var Collar = require('./parts/Collar')
+var getRandomVars = require('./utils')
+var d3 = require('d3')
 
 
 var RandomBotAvatar = React.createClass({
 
-    render: function() {
-        return <svg viewBox="0 0 499.319 539.456" {...this.props}>{this.props.children}</svg>;
+  debug: true,
+
+  calcHead: function(R, scale, viewBox) {
+
+    var rWidth = R[5],
+        rHeight = R[13]
+
+
+    // head width: 40 - 80% of container size
+    scale.range([viewBox.width * 0.4, viewBox.width * 0.8])
+    var headWidth = scale(rWidth)
+    var headX = (viewBox.width - headWidth) / 2
+
+    // head height: 40 - 80% of container size
+    scale.range([viewBox.height * 0.4, viewBox.height * 0.8])
+    var headHeight = scale(rHeight)
+    var headY = (viewBox.height - headHeight) / 2
+
+    return  {
+      width: headWidth,
+      height: headHeight,
+      x: headX,
+      y: headY,
+      // top 50%
+      eyeZone: {
+        x: headX + headWidth * 0.05,
+        width: headWidth * 0.9,
+        y: headY,
+        height: headHeight * 0.5
+      }
     }
+  },
+
+  calcEyes: function(R, scale, headDims) {
+
+    /* calc eyes */
+    var rRadius = R[8],
+        rHorizontalOffset = R[7]
+    var eyeContainer = headDims.eyeZone
+
+    //size - eyezone with margin
+    var narrowest = Math.min(eyeContainer.width, eyeContainer.height)
+    scale.range([(narrowest * 0.15)/2, (narrowest * 0.95)/2])
+    var eyesRadiusLeft = scale(rRadius)
+    var eyesRadiusRight = scale(rRadius)
+
+    //position - randomize within available space considering eye size
+    var oneContainerWidth = ((eyeContainer.width) / 2)
+    var availWidth = oneContainerWidth - (eyesRadiusLeft * 2) - (oneContainerWidth * 0.02)
+
+    scale.range([(0 - availWidth/2), availWidth/2])
+
+    var eyesLeftX = eyeContainer.x + (oneContainerWidth/2) +  scale(rHorizontalOffset)
+    var eyesRightX = (eyeContainer.x + eyeContainer.width) - (oneContainerWidth/2) - scale(rHorizontalOffset)
+
+    var eyesLeftY = headDims.y + (headDims.height * 0.25)
+    var eyesRightY = headDims.y + (headDims.height * 0.25)
+
+
+    return {
+      leftX: eyesLeftX,
+      leftY: eyesLeftY,
+      leftRadius: eyesRadiusLeft,
+      rightX: eyesRightX,
+      rightY: eyesRightY,
+      rightRadius: eyesRadiusRight
+    }
+  },
+
+  calcTop: function(R, scale, headDims) {
+    var antennaHeight = 40
+    return {
+      x: headDims.x + (headDims.width/2),
+      y: headDims.y - antennaHeight,
+      height: antennaHeight
+    }
+  },
+
+  calcEars: function(R, scale, headDims) {
+    var availWidth = (1000 - headDims.width) / 2
+    scale.range([availWidth * 0.2, availWidth * 0.95])
+    var width = scale(R[7])
+    console.log('ears', R[7], width, availWidth)
+    return {
+        width: width,
+        height: headDims.height * 0.5,
+        leftX: headDims.x,
+        leftY: headDims.y + (headDims.height * 0.4),
+        rightX: headDims.x + headDims.width,
+        rightY: headDims.y + (headDims.height * 0.4),
+        R: R,
+        scale: scale
+    }
+  },
+
+  calcMouth: function(R, scale, headDims) {
+    var width = headDims.width * 0.7
+    var margin = headDims.width - width
+    return {
+      x: headDims.x + margin/2,
+      y: headDims.y + (headDims.height * 0.7),
+      width: headDims.width * 0.7,
+      height: headDims.height * 0.2
+    }
+  },
+
+  calcCollar: function(R, scale, headDims) {
+
+    var rHeight = R[17],
+        rWidth = R[4]
+
+    var availHeight = 1000 - (headDims.y + headDims.height)
+    scale.range([availHeight * 0.2, availHeight])
+    var height = scale(rHeight)
+    scale.range([10, 990])
+    var width = scale(rWidth)
+
+    return {
+        x: 500 - width/2 ,
+        y: headDims.y + headDims.height + 10,
+        height: height,
+        width: width
+    }
+  },
+
+  layoutParts: function(rnd) {
+
+    var viewBox = {
+      minX: 0,
+      minY: 0,
+      width: 1000,
+      height: 1000
+    }
+
+
+    var seed = 'domo arigato'
+    var input = seed + String(rnd) + seed
+    var R = getRandomVars(input)
+    var scale = d3.scale.linear().domain([0, 99])
+
+    var heads = [Head, Head2]
+    scale.rangeRound([0, heads.length-1])
+    var headComponent = heads[scale(R[15])]
+
+    var eyes = [Eyes, Eyes2]
+    scale.rangeRound([0, eyes.length-1])
+    var eyeComponent = eyes[scale(R[2])]
+
+    var mouths = [Mouth, Mouth2]
+    scale.rangeRound([0, mouths.length-1])
+    var mouthComponent = mouths[scale(R[6])]
+
+    var headDims = this.calcHead(R, scale, viewBox)
+    var eyesDims = this.calcEyes(R, scale, headDims)
+    var topDims = this.calcTop(R, scale, headDims)
+    var mouthDims = this.calcMouth(R, scale, headDims)
+    var earsDims = this.calcEars(R, scale, headDims)
+    var collarDims = this.calcCollar(R, scale, headDims)
+
+
+    return {
+      viewBox: viewBox,
+      viewBoxParam: [String(viewBox.minX), String(viewBox.minY), String(viewBox.width), String(viewBox.height)].join(' '),
+      headDims: headDims,
+      eyesDims: eyesDims,
+      topDims: topDims,
+      earsDims: earsDims,
+      mouthDims: mouthDims,
+      collarDims: collarDims,
+      headComponent: headComponent,
+      eyeComponent: eyeComponent,
+      mouthComponent: mouthComponent
+    }
+  },
+
+  render: function() {
+    var layout = this.layoutParts(this.props.seed)
+    // var debugEyeZone = (this.debug ? <rect {...layout.headDims.eyeZone} fill="#008888"/> : '')
+    // console.log(debugEyeZone)
+    return (
+      <svg
+        viewBox={layout.viewBoxParam}
+        {...this.props}
+        fill="#CCCCCC">
+
+        {/* placeholder background */}
+        <rect x="0" y="0" width="1000" height="1000" fill="#000000"/>
+
+        <layout.headComponent {...layout.headDims}/>
+        {/*debugEyeZone*/}
+
+        <layout.eyeComponent fill="#0000FF" {...layout.eyesDims}/>
+        <layout.mouthComponent {...layout.mouthDims}/>
+        <Top {...layout.topDims}/>
+        <Ears {...layout.earsDims}/>
+        <Collar {...layout.collarDims}/>
+
+      </svg>
+    )
+  }
 
 
 })
 
-module.exports = {RandomBotAvatar, Rectangle, Eyes, Head, Ears, Top, Collar}
+module.exports = RandomBotAvatar
